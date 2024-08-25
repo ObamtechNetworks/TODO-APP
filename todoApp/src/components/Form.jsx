@@ -1,26 +1,42 @@
 import { useState } from "react";
 import styles from "./form.module.css";
 
+// Utility function to convert string to sentence case
+function toSentenceCase(str) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 export default function Form({ todos, setTodos }) {
-  const [todo, setTodo] = useState("");
+  // const [todo, setTodo] = useState("");
+  const [todo, setTodo] = useState({ name: "", done: false });
 
   function handleSubmit(event) {
     event.preventDefault();
+
     // Handle empty value
-    if (!todo) {
-      alert("Cannot add empty item");
+    if (todo.name.trim() === "") {
+      alert("Cannot add an empty item");
       return;
     }
 
-    // Check if the item is already in the list
-    if (todos.includes(todo)) {
+    // Convert todo.name to sentence case
+    const formattedName = toSentenceCase(todo.name.trim());
+
+    // Check if the item is already in the list (case-insensitive check)
+    const isDuplicate = todos.some(
+      (existingTodo) =>
+        existingTodo.name.toLowerCase() === formattedName.toLowerCase()
+    );
+    if (isDuplicate) {
       alert("Item already added");
-      setTodo(""); // Clear input after adding
+      setTodo({ name: "", done: false }); // Clear input after adding
       return;
     }
-    // Add the new item to the list
-    setTodos([...todos, todo]);
-    setTodo(""); // Clear input after adding
+
+    // Add the new item with the formatted name
+    setTodos([...todos, { ...todo, name: formattedName }]);
+    setTodo({ name: "", done: false }); // Clear input after adding
   }
 
   return (
@@ -28,8 +44,10 @@ export default function Form({ todos, setTodos }) {
       <div className={styles.inputContainer}>
         <input
           className={styles.modernInput}
-          onChange={(event) => setTodo(event.target.value)}
-          value={todo}
+          onChange={(event) =>
+            setTodo({ name: event.target.value, done: false })
+          }
+          value={todo.name}
           type="text"
           placeholder="Enter todo item..."
         />
