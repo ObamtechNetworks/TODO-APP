@@ -1,0 +1,12 @@
+# Ignore all node_modules directories anywhere in the project
+**/node_modules/
+
+# Ignore the .vscode folder
+.vscode/
+
+# Ignore all hidden files/folders except for .gitignore
+.*
+!/.gitignore
+
+# Optional: Ignore the lockfile if you don't want to track it
+package-lock.json
